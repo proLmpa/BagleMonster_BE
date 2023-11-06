@@ -23,8 +23,8 @@ public class StoreController {
 
     @Operation(summary = "가게 전체 조회")
     @GetMapping("/stores")
-    public ResponseEntity<StoresResponseDto> selectStoreList() {
-        StoresResponseDto result = storeService.selectStoreList();
+    public ResponseEntity<StoresResponseDto> selectStores() {
+        StoresResponseDto result = storeService.selectStores();
         return ResponseEntity.ok().body(result);
     }
 

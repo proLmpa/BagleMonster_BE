@@ -27,6 +27,7 @@ public class StoreResponseDto {
 
     public static StoreResponseDto of(Store store) {
         return StoreResponseDto.builder()
+                .id(store.getId())
                 .name(store.getName())
                 .address(store.getAddress())
                 .storePictureUrl(store.getStorePictureUrl())

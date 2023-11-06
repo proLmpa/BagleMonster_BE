@@ -20,9 +20,9 @@ public class StoreService {
 
     // 가게 전체 조회
     @Transactional(readOnly = true)
-    public StoresResponseDto selectStoreList() {
-        List<Store> storeList = storeRepository.findAll().stream().toList();
-        return StoresResponseDto.of(storeList);
+    public StoresResponseDto selectStores() {
+        List<Store> stores = storeRepository.findAll().stream().toList();
+        return StoresResponseDto.of(stores);
     }
 
     // 가게 단일 조회
@@ -39,7 +39,7 @@ public class StoreService {
             throw new UnauthorizedException("가게 등록에 대한 권한이 없습니다.");
         }
 
-        Store store = storeRequestDto.toEntity();
+        Store store = storeRequestDto.toEntity(user);
         storeRepository.save(store);
     }
 
@@ -72,7 +72,7 @@ public class StoreService {
 //    }
 
     // ID로 가게 찾기
-    private Store findStore(Long storeId) {
+    public Store findStore(Long storeId) {
         return storeRepository.findById(storeId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 가게는 존재하지 않습니다.")
         );
