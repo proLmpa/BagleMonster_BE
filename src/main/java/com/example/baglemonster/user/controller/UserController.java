@@ -3,6 +3,7 @@ package com.example.baglemonster.user.controller;
 import com.example.baglemonster.common.dto.ApiResponseDto;
 import com.example.baglemonster.user.dto.LoginRequestDto;
 import com.example.baglemonster.user.dto.SignupRequestDto;
+import com.example.baglemonster.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

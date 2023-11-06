@@ -2,7 +2,6 @@ package com.example.baglemonster.user.dto;
 
 import com.example.baglemonster.user.entity.User;
 import com.example.baglemonster.user.entity.UserRoleEnum;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -16,7 +15,8 @@ public class SignupRequestDto {
     private String name;
 
     @NotBlank
-    @Email
+    @Pattern(regexp = "^[a-zA-Z0-9]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$",
+            message = "이메일은 영문자 및 숫자로 시작하여 중간에 @를 포함하고 2~3자의 최상위 도메인으로 끝나야 합니다.")
     private String email;
 
     @NotBlank
