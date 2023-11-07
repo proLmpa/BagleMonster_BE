@@ -1,6 +1,7 @@
 package com.example.baglemonster.order.entity;
 
 import com.example.baglemonster.common.entity.Timestamped;
+import com.example.baglemonster.store.entity.Store;
 import com.example.baglemonster.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,9 +36,9 @@ public class Order extends Timestamped {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "store_id", nullable = false)
-//    private Store store;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
 
     /**
     * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
