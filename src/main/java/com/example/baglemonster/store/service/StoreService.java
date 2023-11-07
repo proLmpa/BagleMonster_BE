@@ -1,5 +1,6 @@
 package com.example.baglemonster.store.service;
 
+import com.example.baglemonster.common.exception.NotFoundException;
 import com.example.baglemonster.common.exception.UnauthorizedException;
 import com.example.baglemonster.store.dto.StoreRequestDto;
 import com.example.baglemonster.store.dto.StoreResponseDto;
@@ -51,6 +52,11 @@ public class StoreService {
     public StoreResponseDto selectMyStore(User user) {
         User storeUser = findUser(user.getId());
         Store store = storeRepository.findByUser(storeUser);
+
+        if (store == null) {
+            throw new NotFoundException("가게가 존재하지 않습니다.");
+        }
+
         return StoreResponseDto.of(store);
     }
 
@@ -58,11 +64,12 @@ public class StoreService {
     @Transactional
     public void modifyStore(Long storeId, StoreRequestDto storeRequestDto, User user) {
         // 관리자 수정 권한 협의 필요
-        if (!user.getRole().getAuthority().equals(UserRoleEnum.STORE.getAuthority())) {
+        Store store = findStore(storeId);
+
+        if (!store.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("가게 수정에 대한 권한이 없습니다.");
         }
 
-        Store store = findStore(storeId);
         store.editStore(storeRequestDto);
     }
 
@@ -70,25 +77,24 @@ public class StoreService {
     @Transactional
     public void deleteStore(Long storeId, User user) {
         // 관리자 삭제 권한 협의 필요
-        if (!user.getRole().getAuthority().equals(UserRoleEnum.STORE.getAuthority())) {
+        Store store = findStore(storeId);
+
+        if (!store.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("가게 삭제에 대한 권한이 없습니다.");
         }
 
-        Store store = findStore(storeId);
         storeRepository.delete(store);
     }
 
     // ID로 가게 찾기
     public Store findStore(Long storeId) {
         return storeRepository.findById(storeId).orElseThrow(() ->
-                new IllegalArgumentException("선택한 가게는 존재하지 않습니다.")
+                new NotFoundException("선택한 가게는 존재하지 않습니다.")
         );
     }
 
     // ID로 유저 찾기
     public User findUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("선택한 회원은 존재하지 않습니다.")
-        );
+        return userRepository.findById(userId).orElse(null);
     }
 }
