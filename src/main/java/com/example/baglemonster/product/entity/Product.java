@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name="stores")
+@Table(name="products")
 public class Product extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
