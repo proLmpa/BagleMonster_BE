@@ -37,10 +37,10 @@ public class Product extends Timestamped {
     @JoinColumn(name = "storeId", nullable = false)
     private Store store;
 
-    public void editProduct(ProductRequestDto productRequestDto) {
+    public void editProduct(ProductRequestDto productRequestDto, String productPictureUrl) {
         this.name = productRequestDto.getName();
         this.price = productRequestDto.getPrice();
-        this.productPictureUrl = productRequestDto.getProductPictureUrl();
+        this.productPictureUrl = productPictureUrl;
         this.status = productRequestDto.getStatus();
     }
 }

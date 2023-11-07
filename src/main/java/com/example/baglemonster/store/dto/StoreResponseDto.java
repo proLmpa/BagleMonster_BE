@@ -25,11 +25,14 @@ public class StoreResponseDto {
     private String closedDays;
 
     public static StoreResponseDto of(Store store) {
+        String noImageUrl = "https://baglemonster.s3.ap-northeast-2.amazonaws.com/no_image.jpg";
+        String pictureUrl = (store.getStorePictureUrl() == null) ? noImageUrl : store.getStorePictureUrl();
+
         return StoreResponseDto.builder()
                 .id(store.getId())
                 .name(store.getName())
                 .address(store.getAddress())
-                .storePictureUrl(store.getStorePictureUrl())
+                .storePictureUrl(pictureUrl)
                 .phone(store.getPhone())
                 .content(store.getContent())
                 .productCreatedTime(store.getProductCreatedTime())
