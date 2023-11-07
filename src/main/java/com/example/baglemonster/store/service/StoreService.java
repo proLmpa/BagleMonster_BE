@@ -7,6 +7,7 @@ import com.example.baglemonster.store.dto.StoreResponseDto;
 import com.example.baglemonster.store.entity.Store;
 import com.example.baglemonster.store.repository.StoreRepository;
 import com.example.baglemonster.user.entity.User;
+import com.example.baglemonster.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
+    private final UserRepository userRepository;
 
     // 가게 전체 조회
     @Transactional(readOnly = true)
@@ -43,6 +45,14 @@ public class StoreService {
         storeRepository.save(store);
     }
 
+    // 내 가게 조회
+    @Transactional(readOnly = true)
+    public StoreResponseDto selectMyStore(User user) {
+        User storeUser = findUser(user.getId());
+        Store store = storeRepository.findByUser(storeUser);
+        return StoreResponseDto.of(store);
+    }
+
     // 가게 수정
     @Transactional
     public void modifyStore(Long storeId, StoreRequestDto storeRequestDto, User user) {
@@ -67,14 +77,17 @@ public class StoreService {
         storeRepository.delete(store);
     }
 
-    // 정시, 매시 30분마다 상태 체크 및 변경?
-//    private void checkStatus() {
-//    }
-
     // ID로 가게 찾기
     public Store findStore(Long storeId) {
         return storeRepository.findById(storeId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 가게는 존재하지 않습니다.")
+        );
+    }
+
+    // ID로 유저 찾기
+    public User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 회원은 존재하지 않습니다.")
         );
     }
 }

@@ -23,7 +23,6 @@ public class StoreResponseDto {
     private LocalTime openedTime;
     private LocalTime closedTime;
     private String closedDays;
-    private Boolean status;
 
     public static StoreResponseDto of(Store store) {
         return StoreResponseDto.builder()
@@ -37,7 +36,6 @@ public class StoreResponseDto {
                 .openedTime(store.getOpenedTime())
                 .closedTime(store.getClosedTime())
                 .closedDays(store.getClosedDays())
-                .status(store.getStatus())
                 .build();
     }
 }

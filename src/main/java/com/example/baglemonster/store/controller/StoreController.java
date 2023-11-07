@@ -42,6 +42,13 @@ public class StoreController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "가게가 등록되었습니다."));
     }
 
+    @Operation(summary = "내 가게 조회")
+    @GetMapping("/stores/mystore")
+    public ResponseEntity<StoreResponseDto> selectMyStore(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        StoreResponseDto result = storeService.selectMyStore(userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
+
     @Operation(summary = "가게 수정")
     @PutMapping("/stores/{storeId}")
     public ResponseEntity<ApiResponseDto> modifyStore(@PathVariable Long storeId, @RequestBody StoreRequestDto storeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -50,7 +57,7 @@ public class StoreController {
     }
 
     @Operation(summary = "가게 삭제")
-    @PutMapping("/stores/{storeId}")
+    @DeleteMapping("/stores/{storeId}")
     public ResponseEntity<ApiResponseDto> deleteStore(@PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         storeService.deleteStore(storeId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.NO_CONTENT.value(), "가게가 삭제되었습니다."));

@@ -46,9 +46,6 @@ public class Store extends Timestamped {
     @Column(name = "closedDays", nullable = false)
     private String closedDays;
 
-    @Column(name = "status", nullable = false)
-    private Boolean status;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
     private User user;
@@ -63,17 +60,5 @@ public class Store extends Timestamped {
         this.openedTime = storeRequestDto.getOpenedTime();
         this.closedTime = storeRequestDto.getClosedTime();
         this.closedDays = storeRequestDto.getClosedDays();
-        this.status = checkOperationTime(openedTime, closedTime);
-    }
-
-    public static Boolean checkOperationTime(LocalTime openedTime, LocalTime closedTime) {
-        LocalTime currentTime = LocalTime.now();
-
-        // 시간 범위가 하루를 넘어가는 경우에 대비하여 처리
-        if (openedTime.isAfter(closedTime)) {
-            return currentTime.isAfter(openedTime) || currentTime.isBefore(closedTime);
-        } else {
-            return currentTime.isAfter(openedTime) && currentTime.isBefore(closedTime);
-        }
     }
 }

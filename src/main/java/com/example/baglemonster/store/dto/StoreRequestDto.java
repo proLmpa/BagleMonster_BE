@@ -33,7 +33,6 @@ public class StoreRequestDto {
                 .openedTime(this.openedTime)
                 .closedTime(this.closedTime)
                 .closedDays(this.closedDays)
-                .status(Store.checkOperationTime(openedTime, closedTime))
                 .user(user)
                 .build();
     }

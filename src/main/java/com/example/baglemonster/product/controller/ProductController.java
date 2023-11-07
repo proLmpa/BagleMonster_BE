@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @Operation(summary = "상품 삭제")
-    @PutMapping("/stores/{storeId}/products/{productId}")
+    @DeleteMapping("/stores/{storeId}/products/{productId}")
     public ResponseEntity<ApiResponseDto> deleteProduct(@PathVariable Long storeId, @PathVariable Long productId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         productService.deleteProduct(storeId, productId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.NO_CONTENT.value(), "상품이 삭제되었습니다."));

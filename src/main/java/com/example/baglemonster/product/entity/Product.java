@@ -26,6 +26,7 @@ public class Product extends Timestamped {
     @Column(name = "productPictureUrl")
     private String productPictureUrl;
 
+//   주문 수에 따른 인기도 -> 주문 CRUD 완료 후 마무리 예정 -> 현재 null로 채워짐
     @Column(name = "popularity")
     private Integer popularity;
 
