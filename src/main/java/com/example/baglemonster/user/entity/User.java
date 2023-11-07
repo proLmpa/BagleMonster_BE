@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name="users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +26,8 @@ public class User {
 
     private String phone;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
     @Builder.Default
