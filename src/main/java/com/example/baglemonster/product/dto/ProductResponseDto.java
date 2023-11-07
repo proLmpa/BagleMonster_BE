@@ -18,8 +18,6 @@ public class ProductResponseDto {
     private Integer popularity;
     private Boolean status;
 
-    private static String noImageUrl = "";
-
     public static ProductResponseDto of(Product product) {
         String noImageUrl = "https://baglemonster.s3.ap-northeast-2.amazonaws.com/no_image.jpg";
         String pictureUrl = (product.getProductPictureUrl() == null) ? noImageUrl : product.getProductPictureUrl();
