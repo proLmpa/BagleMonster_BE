@@ -14,7 +14,6 @@ public class StoreRequestDto {
 
     private String name;
     private String address;
-    private String storePictureUrl;
     private String phone;
     private String content;
     private LocalTime productCreatedTime;
@@ -22,11 +21,11 @@ public class StoreRequestDto {
     private LocalTime closedTime;
     private String closedDays;
 
-    public Store toEntity(User user) {
+    public Store toEntity(User user, String storePictureUrl) {
         return Store.builder()
                 .name(this.name)
                 .address(this.address)
-                .storePictureUrl(this.storePictureUrl)
+                .storePictureUrl(storePictureUrl)
                 .phone(this.phone)
                 .content(this.content)
                 .productCreatedTime(this.productCreatedTime)

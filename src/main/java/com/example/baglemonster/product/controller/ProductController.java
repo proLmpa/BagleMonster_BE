@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -23,15 +26,18 @@ public class ProductController {
 
     @Operation(summary = "상품 등록")
     @PostMapping("/stores/{storeId}/products")
-    public ResponseEntity<ApiResponseDto> createProduct(@PathVariable Long storeId, @RequestBody ProductRequestDto productRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        productService.createProduct(storeId, productRequestDto, userDetails.getUser());
+    public ResponseEntity<ApiResponseDto> createProduct(@PathVariable Long storeId,
+                                                        @RequestPart(value = "requestDto") ProductRequestDto productRequestDto,
+                                                        @RequestPart(value = "picture", required = false) MultipartFile file,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        productService.createProduct(storeId, productRequestDto, file, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "상품이 등록되었습니다."));
     }
 
-    @Operation(summary = "상품 목록 조회")
+    @Operation(summary = "해당 가게 상품 목록 조회")
     @GetMapping("/stores/{storeId}/products")
-    public ResponseEntity<ProductsResponseDto> selectProducts() {
-        ProductsResponseDto result = productService.selectProducts();
+    public ResponseEntity<ProductsResponseDto> selectProducts(@PathVariable Long storeId) {
+        ProductsResponseDto result = productService.selectProducts(storeId);
         return ResponseEntity.ok().body(result);
     }
 
@@ -44,8 +50,11 @@ public class ProductController {
 
     @Operation(summary = "상품 수정")
     @PutMapping("/stores/{storeId}/products/{productId}")
-    public ResponseEntity<ApiResponseDto> modifyProduct(@PathVariable Long storeId, @PathVariable Long productId, @RequestBody ProductRequestDto productRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        productService.modifyProduct(storeId, productId, productRequestDto, userDetails.getUser());
+    public ResponseEntity<ApiResponseDto> modifyProduct(@PathVariable Long storeId, @PathVariable Long productId,
+                                                        @RequestPart(value = "requestDto") ProductRequestDto productRequestDto,
+                                                        @RequestPart(value = "picture", required = false) MultipartFile file,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        productService.modifyProduct(storeId, productId, productRequestDto, file, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "상품이 수정되었습니다."));
     }
 

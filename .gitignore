@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 application-ds.properties
+application-s3.properties
 
 ### STS ###
 .apt_generated
