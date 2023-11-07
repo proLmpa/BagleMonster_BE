@@ -46,6 +46,9 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // CORS 설정
+        http.cors();
+
         // CSRF 설정
         http.csrf(AbstractHttpConfigurer::disable);
 
