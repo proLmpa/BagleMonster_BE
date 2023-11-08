@@ -72,7 +72,12 @@ public class CartService {
         cartProduct.subtractCartProductQuantity();
         if (cartProduct.getQuantity() == 0) {
             deleteCartProduct(cartId, productId, user);
+            return null;
         }
+        Cart cart = findCart(cartId);
+        Product product = productService.findProduct(productId);
+        Integer totalPrice = cart.getTotalPrice() - product.getPrice();
+        cart.editTotalPrice(totalPrice);
         return CartProductResponseDto.of(cartProduct);
     }
 
@@ -81,6 +86,10 @@ public class CartService {
     public CartProductResponseDto addCartProduct(Long cartId, Long productId, User user) {
         CartProduct cartProduct = getCartProduct(cartId, productId, user);
         cartProduct.addCartProductQuantity();
+        Cart cart = findCart(cartId);
+        Product product = productService.findProduct(productId);
+        Integer totalPrice = cart.getTotalPrice() + product.getPrice();
+        cart.editTotalPrice(totalPrice);
         return CartProductResponseDto.of(cartProduct);
     }
 
@@ -89,6 +98,11 @@ public class CartService {
     public void deleteCartProduct(Long cartId, Long productId, User user) {
         CartProduct cartProduct = getCartProduct(cartId, productId, user);
         cartProductRepository.delete(cartProduct);
+
+        Cart cart = findCart(cartId);
+        Product product = productService.findProduct(productId);
+        Integer totalPrice = cart.getTotalPrice() - (product.getPrice() * cartProduct.getQuantity());
+        cart.editTotalPrice(totalPrice);
     }
 
     // 전체 주문 취소
