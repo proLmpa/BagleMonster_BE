@@ -2,6 +2,7 @@ package com.example.baglemonster.security;
 
 import com.example.baglemonster.common.dto.ApiResponseDto;
 import com.example.baglemonster.user.dto.LoginRequestDto;
+import com.example.baglemonster.user.dto.LoginResponseDto;
 import com.example.baglemonster.user.entity.UserRoleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -49,6 +50,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication (HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("로그인 성공 및 JWT 생성");
+        String name = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         String email = ((UserDetailsImpl) authResult.getPrincipal()).getEmail();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
@@ -57,7 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.setStatus(200);
         response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.OK.value(), "Login Success"));
+        String result = new ObjectMapper().writeValueAsString(new LoginResponseDto(name, role.equals(UserRoleEnum.STORE)));
 
         response.getOutputStream().print(result);
     }
