@@ -1,12 +1,15 @@
 package com.example.baglemonster.store.entity;
 
 import com.example.baglemonster.common.entity.Timestamped;
+import com.example.baglemonster.product.entity.Product;
 import com.example.baglemonster.store.dto.StoreRequestDto;
 import com.example.baglemonster.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -50,10 +53,14 @@ public class Store extends Timestamped {
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-    public void editStore(StoreRequestDto storeRequestDto) {
+    @Builder.Default
+    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
+
+    public void editStore(StoreRequestDto storeRequestDto, String storePictureUrl) {
         this.name = storeRequestDto.getName();
         this.address = storeRequestDto.getAddress();
-        this.storePictureUrl = storeRequestDto.getStorePictureUrl();
+        this.storePictureUrl = storePictureUrl;
         this.phone = storeRequestDto.getPhone();
         this.content = storeRequestDto.getContent();
         this.productCreatedTime = storeRequestDto.getProductCreatedTime();

@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -37,8 +40,10 @@ public class StoreController {
 
     @Operation(summary = "가게 등록")
     @PostMapping("/stores")
-    public ResponseEntity<ApiResponseDto> createStore(@RequestBody StoreRequestDto storeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        storeService.createStore(storeRequestDto, userDetails.getUser());
+    public ResponseEntity<ApiResponseDto> createStore(@RequestPart(value = "requestDto") StoreRequestDto storeRequestDto,
+                                                      @RequestPart(value = "picture", required = false) MultipartFile file,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        storeService.createStore(storeRequestDto, file, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "가게가 등록되었습니다."));
     }
 
@@ -51,8 +56,10 @@ public class StoreController {
 
     @Operation(summary = "가게 수정")
     @PutMapping("/stores/{storeId}")
-    public ResponseEntity<ApiResponseDto> modifyStore(@PathVariable Long storeId, @RequestBody StoreRequestDto storeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        storeService.modifyStore(storeId, storeRequestDto, userDetails.getUser());
+    public ResponseEntity<ApiResponseDto> modifyStore(@PathVariable Long storeId, @RequestPart(value = "requestDto") StoreRequestDto storeRequestDto,
+                                                      @RequestPart(value = "picture", required = false) MultipartFile file,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        storeService.modifyStore(storeId, storeRequestDto, file, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "가게가 수정되었습니다."));
     }
 

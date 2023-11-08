@@ -12,14 +12,13 @@ public class ProductRequestDto {
 
     private String name;
     private Integer price;
-    private String productPictureUrl;
     private Boolean status;
 
-    public Product toEntity(Store store) {
+    public Product toEntity(Store store, String productPictureUrl) {
         return Product.builder()
                 .name(this.name)
                 .price(this.price)
-                .productPictureUrl(this.productPictureUrl)
+                .productPictureUrl(productPictureUrl)
                 .status(this.status)
                 .store(store)
                 .build();

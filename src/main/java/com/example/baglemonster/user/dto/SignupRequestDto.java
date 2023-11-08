@@ -26,6 +26,8 @@ public class SignupRequestDto {
 
     private String phone;
 
+    private Boolean isStore;
+
     public User toEntity(String encodedPassword, UserRoleEnum role) {
         return User.builder()
                 .name(name)

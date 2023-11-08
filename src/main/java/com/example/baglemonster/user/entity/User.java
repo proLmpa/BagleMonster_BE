@@ -1,11 +1,7 @@
 package com.example.baglemonster.user.entity;
 
-import com.example.baglemonster.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder
@@ -30,7 +26,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders = new ArrayList<>();
+//    @Builder.Default
+//    @OneToMany(mappedBy = "user")
+//    private List<Order> orders = new ArrayList<>();
 }

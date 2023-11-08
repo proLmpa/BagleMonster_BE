@@ -1,6 +1,7 @@
 package com.example.baglemonster.product.service;
 
 import com.example.baglemonster.common.exception.UnauthorizedException;
+import com.example.baglemonster.common.s3.service.S3UploadService;
 import com.example.baglemonster.product.dto.ProductRequestDto;
 import com.example.baglemonster.product.dto.ProductResponseDto;
 import com.example.baglemonster.product.dto.ProductsResponseDto;
@@ -12,7 +13,9 @@ import com.example.baglemonster.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -20,24 +23,34 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
     private final StoreService storeService;
+    private final S3UploadService s3UploadService;
 
     // 상품 등록
     @Transactional
-    public void createProduct(Long storeId, ProductRequestDto productRequestDto, User user) {
+    public void createProduct(Long storeId, ProductRequestDto productRequestDto,
+                              MultipartFile file, User user) throws IOException {
         Store store = storeService.findStore(storeId);
 
         if (!store.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("상품 등록에 대한 권한이 없습니다.");
         }
 
-        Product product = productRequestDto.toEntity(store);
+        String productPictureUrl;
+        if (file.getSize() == 0) {
+            productPictureUrl = null;
+        } else {
+            productPictureUrl = s3UploadService.uploadFile(file);
+        }
+
+        Product product = productRequestDto.toEntity(store, productPictureUrl);
         productRepository.save(product);
     }
 
-    // 상품 목록 조회
+    // 해당 가게 상품 목록 조회
     @Transactional(readOnly = true)
-    public ProductsResponseDto selectProducts() {
-        List<Product> products = productRepository.findAll().stream().toList();
+    public ProductsResponseDto selectProducts(Long storeId) {
+        Store store = storeService.findStore(storeId);
+        List<Product> products = productRepository.findAllByStore(store).stream().toList();
         return ProductsResponseDto.of(products);
     }
 
@@ -50,7 +63,8 @@ public class ProductService {
 
     // 상품 수정
     @Transactional
-    public void modifyProduct(Long storeId, Long productId, ProductRequestDto productRequestDto, User user) {
+    public void modifyProduct(Long storeId, Long productId, ProductRequestDto productRequestDto,
+                              MultipartFile file, User user) throws IOException {
         // 관리자 수정 권한 협의 필요
         Store store = storeService.findStore(storeId);
         Product product = findProduct(productId);
@@ -59,7 +73,14 @@ public class ProductService {
             throw new UnauthorizedException("상품 수정에 대한 권한이 없습니다.");
         }
 
-        product.editProduct(productRequestDto);
+        String currentPictureUrl = product.getProductPictureUrl();
+        String productPictureUrl = currentPictureUrl;
+        if (file != null) {
+            s3UploadService.deleteFile(currentPictureUrl);
+            productPictureUrl  = s3UploadService.uploadFile(file);
+        }
+
+        product.editProduct(productRequestDto, productPictureUrl);
     }
 
     // 상품 삭제
@@ -71,6 +92,12 @@ public class ProductService {
 
         if (!store.getUser().getId().equals(user.getId()) || !product.getStore().getId().equals(storeId)) {
             throw new UnauthorizedException("상품 삭제에 대한 권한이 없습니다.");
+        }
+
+        String productPictureUrl = store.getStorePictureUrl();
+
+        if (productPictureUrl != null) {
+            s3UploadService.deleteFile(productPictureUrl);
         }
 
         productRepository.delete(product);

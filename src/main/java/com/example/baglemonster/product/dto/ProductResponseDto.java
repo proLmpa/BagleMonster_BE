@@ -19,11 +19,14 @@ public class ProductResponseDto {
     private Boolean status;
 
     public static ProductResponseDto of(Product product) {
+        String noImageUrl = "https://baglemonster.s3.ap-northeast-2.amazonaws.com/no_image.jpg";
+        String pictureUrl = (product.getProductPictureUrl() == null) ? noImageUrl : product.getProductPictureUrl();
+
         return ProductResponseDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
-                .productPictureUrl(product.getProductPictureUrl())
+                .productPictureUrl(pictureUrl)
                 .popularity(product.getPopularity())
                 .status(product.getStatus())
                 .build();
