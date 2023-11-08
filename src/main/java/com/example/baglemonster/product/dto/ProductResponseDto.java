@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductResponseDto {
-    private Long id;
+    private Long productId;
     private String name;
     private Integer price;
     private String productPictureUrl;
@@ -23,7 +23,7 @@ public class ProductResponseDto {
         String pictureUrl = (product.getProductPictureUrl() == null) ? noImageUrl : product.getProductPictureUrl();
 
         return ProductResponseDto.builder()
-                .id(product.getId())
+                .productId(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
                 .productPictureUrl(pictureUrl)

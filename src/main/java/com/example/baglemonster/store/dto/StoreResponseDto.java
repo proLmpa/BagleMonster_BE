@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoreResponseDto {
-    private Long id;
+    private Long storeId;
     private String name;
     private String address;
     private String storePictureUrl;
@@ -29,7 +29,7 @@ public class StoreResponseDto {
         String pictureUrl = (store.getStorePictureUrl() == null) ? noImageUrl : store.getStorePictureUrl();
 
         return StoreResponseDto.builder()
-                .id(store.getId())
+                .storeId(store.getId())
                 .name(store.getName())
                 .address(store.getAddress())
                 .storePictureUrl(pictureUrl)

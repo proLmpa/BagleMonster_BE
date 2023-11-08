@@ -1,6 +1,7 @@
 package com.example.baglemonster.user.service;
 
 import com.example.baglemonster.user.dto.SignupRequestDto;
+import com.example.baglemonster.user.entity.User;
 import com.example.baglemonster.user.entity.UserRoleEnum;
 import com.example.baglemonster.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,10 @@ public class UserService {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalStateException("이미 존재하는 이메일입니다.");
         }
+    }
+
+    // ID로 유저 찾기
+    public User findUser(Long userId) {
+        return userRepository.findById(userId).orElse(null);
     }
 }
