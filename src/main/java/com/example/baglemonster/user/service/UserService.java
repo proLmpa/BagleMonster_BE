@@ -21,7 +21,9 @@ public class UserService {
 
         checkDuplicateEmail(requestDto.getEmail());
 
-        userRepository.save(requestDto.toEntity(password, UserRoleEnum.USER));
+        UserRoleEnum role = requestDto.getIsStore() ? UserRoleEnum.STORE : UserRoleEnum.USER;
+
+        userRepository.save(requestDto.toEntity(password, role));
     }
 
     private void checkDuplicateEmail(String email) {
