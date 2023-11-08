@@ -53,6 +53,7 @@ public class Store extends Timestamped {
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "store", orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
