@@ -4,14 +4,14 @@ import com.example.baglemonster.common.exception.NotFoundException;
 import com.example.baglemonster.common.exception.UnauthorizedException;
 import com.example.baglemonster.common.s3.service.S3UploadService;
 import com.example.baglemonster.product.entity.Product;
-import com.example.baglemonster.store.dto.StoreRequestDto;
 import com.example.baglemonster.store.dto.StoreDetailResponseDto;
+import com.example.baglemonster.store.dto.StoreRequestDto;
 import com.example.baglemonster.store.dto.StoresResponseDto;
 import com.example.baglemonster.store.entity.Store;
 import com.example.baglemonster.store.repository.StoreRepository;
 import com.example.baglemonster.user.entity.User;
 import com.example.baglemonster.user.entity.UserRoleEnum;
-import com.example.baglemonster.user.service.UserService;
+import com.example.baglemonster.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
-    private final UserService userService;
     private final S3UploadService s3UploadService;
+    private final UserRepository userRepository;
 
     // 가게 전체 조회
     @Transactional(readOnly = true)
@@ -62,7 +62,7 @@ public class StoreService {
     // 내 가게 조회
     @Transactional(readOnly = true)
     public StoreDetailResponseDto selectMyStore(User user) {
-        User storeUser = userService.findUser(user.getId());
+        User storeUser = findUser(user.getId());
         Store store = storeRepository.findByUser(storeUser);
 
         if (store == null) {
@@ -120,5 +120,10 @@ public class StoreService {
         return storeRepository.findById(storeId).orElseThrow(() ->
                 new NotFoundException("선택한 가게는 존재하지 않습니다.")
         );
+    }
+
+    // ID로 유저 찾기
+    private User findUser(Long userId) {
+        return userRepository.findById(userId).orElse(null);
     }
 }

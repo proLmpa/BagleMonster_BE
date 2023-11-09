@@ -16,7 +16,7 @@ import com.example.baglemonster.product.service.ProductService;
 import com.example.baglemonster.store.entity.Store;
 import com.example.baglemonster.store.service.StoreService;
 import com.example.baglemonster.user.entity.User;
-import com.example.baglemonster.user.service.UserService;
+import com.example.baglemonster.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,13 +30,13 @@ public class CartService {
     private final CartProductRepository cartProductRepository;
     private final StoreService storeService;
     private final ProductService productService;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     // 장바구니 메뉴 추가
     @Transactional
     public void createCart(CartRequestDto cartRequestDto, User user) {
         // 장바구니 확인 후 가져오기
-        User consumer = userService.findUser(user.getId());
+        User consumer = findUser(user.getId());
         Cart cart = getCart(consumer, cartRequestDto);
 
         // 장바구니에 상품 담기 -> 이미 해당 상품이 담겨 있는 경우 예외 처리
@@ -60,7 +60,7 @@ public class CartService {
     // 장바구니 조회
     @Transactional(readOnly = true)
     public CartResponseDto selectCart(User user) {
-        User consumer = userService.findUser(user.getId());
+        User consumer = findUser(user.getId());
         Cart cart = findCartByUserAndStatus(consumer);
         return CartResponseDto.of(cart);
     }
@@ -122,7 +122,7 @@ public class CartService {
     // 주문 내역 조회
     @Transactional(readOnly = true)
     public CartsResponseDto selectCarts(User user) {
-        User consumer = userService.findUser(user.getId());
+        User consumer = findUser(user.getId());
         List<Cart> carts = cartRepository.findAllByUser(consumer).stream().toList();
         return CartsResponseDto.of(carts);
     }
@@ -132,8 +132,8 @@ public class CartService {
     // 장바구니 추가 시 확인 후 가져오기
     private Cart getCart(User user, CartRequestDto cartRequestDto) {
         // 장바구니가 이미 존재할 경우
-        if (findCartByUserAndStatus(user) != null) {
-            Cart cart = findCartByUserAndStatus(user);
+        Cart cart = findCartByUserAndStatus(user);
+        if (cart != null) {
             // 다른 가게의 장바구니가 담겨있을 경우 -> 에외처리
             if (!cart.getStore().getId().equals(cartRequestDto.getStoreId())) {
                 throw new IllegalArgumentException("다른 가게의 상품이 이미 장바구니에 담겨있습니다.");
@@ -182,5 +182,10 @@ public class CartService {
     // 장바구니 상품 찾기
     private CartProduct findCartProduct(Cart cart, Product product) {
         return cartProductRepository.findByCartAndProduct(cart, product).orElse(null);
+    }
+
+    // ID로 유저 찾기
+    private User findUser(Long userId) {
+        return userRepository.findById(userId).orElse(null);
     }
 }
