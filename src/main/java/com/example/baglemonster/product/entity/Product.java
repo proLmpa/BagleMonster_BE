@@ -24,6 +24,9 @@ public class Product extends Timestamped {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "description", nullable = false)
+    private String description;
+
     @Column(name = "price", nullable = false)
     private Integer price;
 
@@ -48,6 +51,7 @@ public class Product extends Timestamped {
 
     public void editProduct(ProductRequestDto productRequestDto, String productPictureUrl) {
         this.name = productRequestDto.getName();
+        this.description = productRequestDto.getDescription();
         this.price = productRequestDto.getPrice();
         this.productPictureUrl = productPictureUrl;
         this.status = productRequestDto.getStatus();

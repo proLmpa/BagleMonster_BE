@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductResponseDto {
     private Long productId;
+    private String storeName;
     private String name;
+    private String description;
     private Integer price;
     private String productPictureUrl;
     private Integer popularity;
@@ -24,7 +26,9 @@ public class ProductResponseDto {
 
         return ProductResponseDto.builder()
                 .productId(product.getId())
+                .storeName(product.getStore().getName())
                 .name(product.getName())
+                .description(product.getDescription())
                 .price(product.getPrice())
                 .productPictureUrl(pictureUrl)
                 .popularity(product.getPopularity())

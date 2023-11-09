@@ -9,13 +9,13 @@ import java.util.List;
 @Getter
 @Builder
 public class CartsResponseDto {
-    private List<CartResponseDto> products;
-    public static CartsResponseDto of(List<Cart> products) {
-        List<CartResponseDto> productsResponseDto = products.stream().map(
+    private List<CartResponseDto> carts;
+    public static CartsResponseDto of(List<Cart> carts) {
+        List<CartResponseDto> cartsResponseDto = carts.stream().map(
                 CartResponseDto::of).toList();
 
         return CartsResponseDto.builder()
-                .products(productsResponseDto)
+                .carts(cartsResponseDto)
                 .build();
     }
 }

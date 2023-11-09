@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -20,6 +21,8 @@ public class CartResponseDto {
     private List<CartProductResponseDto> products;
     private Integer totalPrice;
     private String request;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     public static CartResponseDto of(Cart cart) {
         List<CartProduct> cartProducts = cart.getCartProducts();
@@ -29,6 +32,8 @@ public class CartResponseDto {
                 .products(cartProducts.stream().map(CartProductResponseDto::of).toList())
                 .totalPrice(cart.getTotalPrice())
                 .request(cart.getRequest())
+                .createdDate(cart.getCreatedDate())
+                .modifiedDate(cart.getModifiedDate())
                 .build();
     }
 }
