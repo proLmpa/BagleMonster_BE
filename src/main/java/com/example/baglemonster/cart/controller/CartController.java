@@ -6,7 +6,7 @@ import com.example.baglemonster.cart.dto.CartsResponseDto;
 import com.example.baglemonster.cart.dto.OrderRequestDto;
 import com.example.baglemonster.cart.service.CartService;
 import com.example.baglemonster.common.dto.ApiResponseDto;
-import com.example.baglemonster.security.UserDetailsImpl;
+import com.example.baglemonster.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
