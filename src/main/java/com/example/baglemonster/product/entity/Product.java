@@ -1,10 +1,14 @@
 package com.example.baglemonster.product.entity;
 
+import com.example.baglemonster.cartProduct.entity.CartProduct;
 import com.example.baglemonster.common.entity.Timestamped;
 import com.example.baglemonster.product.dto.ProductRequestDto;
 import com.example.baglemonster.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -20,6 +24,9 @@ public class Product extends Timestamped {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "description", nullable = false)
+    private String description;
+
     @Column(name = "price", nullable = false)
     private Integer price;
 
@@ -30,6 +37,7 @@ public class Product extends Timestamped {
     @Column(name = "popularity")
     private Integer popularity;
 
+    // 재고 있음 -> true/ 품절 -> false
     @Column(name = "status", nullable = false)
     private Boolean status;
 
@@ -37,8 +45,13 @@ public class Product extends Timestamped {
     @JoinColumn(name = "storeId", nullable = false)
     private Store store;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    private List<CartProduct> cartProducts = new ArrayList<>();
+
     public void editProduct(ProductRequestDto productRequestDto, String productPictureUrl) {
         this.name = productRequestDto.getName();
+        this.description = productRequestDto.getDescription();
         this.price = productRequestDto.getPrice();
         this.productPictureUrl = productPictureUrl;
         this.status = productRequestDto.getStatus();
