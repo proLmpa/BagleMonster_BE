@@ -5,7 +5,7 @@ import com.example.baglemonster.product.dto.ProductRequestDto;
 import com.example.baglemonster.product.dto.ProductResponseDto;
 import com.example.baglemonster.product.dto.ProductsResponseDto;
 import com.example.baglemonster.product.service.ProductService;
-import com.example.baglemonster.security.UserDetailsImpl;
+import com.example.baglemonster.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

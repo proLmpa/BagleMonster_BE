@@ -1,9 +1,9 @@
 package com.example.baglemonster.common.config;
 
-import com.example.baglemonster.security.JwtAuthenticationFilter;
-import com.example.baglemonster.security.JwtAuthorizationFilter;
-import com.example.baglemonster.security.JwtUtil;
-import com.example.baglemonster.security.UserDetailsServiceImpl;
+import com.example.baglemonster.common.security.JwtAuthenticationFilter;
+import com.example.baglemonster.common.security.JwtAuthorizationFilter;
+import com.example.baglemonster.common.security.JwtUtil;
+import com.example.baglemonster.common.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,7 +1,7 @@
 package com.example.baglemonster.store.controller;
 
 import com.example.baglemonster.common.dto.ApiResponseDto;
-import com.example.baglemonster.security.UserDetailsImpl;
+import com.example.baglemonster.common.security.UserDetailsImpl;
 import com.example.baglemonster.store.dto.StoresResponseDto;
 import com.example.baglemonster.store.dto.StoreRequestDto;
 import com.example.baglemonster.store.dto.StoreDetailResponseDto;
