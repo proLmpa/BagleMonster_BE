@@ -1,4 +1,4 @@
-package com.example.baglemonster.security;
+package com.example.baglemonster.common.security;
 
 import com.example.baglemonster.user.entity.User;
 import com.example.baglemonster.user.repository.UserRepository;
