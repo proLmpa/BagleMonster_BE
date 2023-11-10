@@ -11,12 +11,14 @@ import lombok.*;
 public class ProductRequestDto {
 
     private String name;
+    private String description;
     private Integer price;
     private Boolean status;
 
     public Product toEntity(Store store, String productPictureUrl) {
         return Product.builder()
                 .name(this.name)
+                .description(this.description)
                 .price(this.price)
                 .productPictureUrl(productPictureUrl)
                 .status(this.status)

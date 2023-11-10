@@ -104,7 +104,7 @@ public class ProductService {
     }
 
     // ID로 상품 찾기
-    private Product findProduct(Long productId) {
+    public Product findProduct(Long productId) {
         return productRepository.findById(productId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 상품은 존재하지 않습니다.")
         );
