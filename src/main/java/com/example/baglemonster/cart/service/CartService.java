@@ -6,7 +6,6 @@ import com.example.baglemonster.cart.dto.CartsResponseDto;
 import com.example.baglemonster.cart.dto.OrderRequestDto;
 import com.example.baglemonster.cart.entity.Cart;
 import com.example.baglemonster.cart.repository.CartRepository;
-import com.example.baglemonster.cartProduct.dto.CartProductResponseDto;
 import com.example.baglemonster.cartProduct.entity.CartProduct;
 import com.example.baglemonster.cartProduct.repository.CartProductRepository;
 import com.example.baglemonster.common.exception.NotFoundException;
@@ -49,10 +48,6 @@ public class CartService {
             cartProductRepository.save(cartProduct);
         }
 
-        // 장바구니 총액 수정하기
-        Integer totalPrice = cart.getTotalPrice() + (product.getPrice() * cartRequestDto.getQuantity());
-        cart.editTotalPrice(totalPrice);
-
         // 장바구니 저장하기
         cartRepository.save(cart);
     }
@@ -65,44 +60,11 @@ public class CartService {
         return CartResponseDto.of(cart);
     }
 
-    // 특정 주문 수량 감소
-    @Transactional
-    public CartProductResponseDto subtractCartProduct(Long cartId, Long productId, User user) {
-        CartProduct cartProduct = getCartProduct(cartId, productId, user);
-        cartProduct.subtractCartProductQuantity();
-        if (cartProduct.getQuantity() == 0) {
-            deleteCartProduct(cartId, productId, user);
-            return null;
-        }
-        Cart cart = findCart(cartId);
-        Product product = productService.findProduct(productId);
-        Integer totalPrice = cart.getTotalPrice() - product.getPrice();
-        cart.editTotalPrice(totalPrice);
-        return CartProductResponseDto.of(cartProduct);
-    }
-
-    // 특정 주문 수량 추가
-    @Transactional
-    public CartProductResponseDto addCartProduct(Long cartId, Long productId, User user) {
-        CartProduct cartProduct = getCartProduct(cartId, productId, user);
-        cartProduct.addCartProductQuantity();
-        Cart cart = findCart(cartId);
-        Product product = productService.findProduct(productId);
-        Integer totalPrice = cart.getTotalPrice() + product.getPrice();
-        cart.editTotalPrice(totalPrice);
-        return CartProductResponseDto.of(cartProduct);
-    }
-
     // 특정 주문 취소
     @Transactional
     public void deleteCartProduct(Long cartId, Long productId, User user) {
         CartProduct cartProduct = getCartProduct(cartId, productId, user);
         cartProductRepository.delete(cartProduct);
-
-        Cart cart = findCart(cartId);
-        Product product = productService.findProduct(productId);
-        Integer totalPrice = cart.getTotalPrice() - (product.getPrice() * cartProduct.getQuantity());
-        cart.editTotalPrice(totalPrice);
     }
 
     // 전체 주문 취소
@@ -116,7 +78,15 @@ public class CartService {
     @Transactional
     public void orderCart(Long cartId, OrderRequestDto orderRequestDto, User user) {
         Cart cart = getCart(cartId, user);
+        if (cart.getStatus()) {
+            throw new IllegalArgumentException("해당 장바구니는 이미 주문 완료된 상태입니다.");
+        }
+        List<CartProduct> cartProducts = cart.getCartProducts();
+        checkCartQuantity(cartProducts, orderRequestDto.getProductList());
         cart.order(orderRequestDto);
+        for (CartProduct cartProduct : cartProducts) {
+            cartProduct.getProduct().addPopularity();
+        }
     }
 
     // 주문 내역 조회
@@ -164,6 +134,21 @@ public class CartService {
     private Cart findCartByUserAndStatus(User user) {
         boolean status = false;
         return cartRepository.findByUserAndStatus(user, status);
+    }
+
+    // 주문 전 장바구니와 수량 비교하기
+    private void checkCartQuantity(List<CartProduct> cartProducts, List<CartRequestDto> productList) {
+        for (CartProduct cartProduct : cartProducts) {
+            Long cartProductId = cartProduct.getProduct().getId();
+            Integer cartProductQuantity = cartProduct.getQuantity();
+            for (CartRequestDto orderProduct : productList) {
+                Long orderProductId = orderProduct.getProductId();
+                Integer orderProductQuantity = orderProduct.getQuantity();
+                if ((cartProductId.equals(orderProductId) && (!cartProductQuantity.equals(orderProductQuantity)))) {
+                    cartProduct.editQuantity(orderProductQuantity);
+                }
+            }
+        }
     }
 
     // ID로 장바구니 찾기

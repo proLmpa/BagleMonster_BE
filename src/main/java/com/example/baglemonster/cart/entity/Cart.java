@@ -25,9 +25,6 @@ public class Cart extends Timestamped {
     @Column(name = "totalPrice", nullable = false)
     private Integer totalPrice;
 
-    @Column(name = "request")
-    private String request;
-
     // 장바구니 상태면 false, 주문 완료 상태면 true
     @Column(name = "status", nullable = false)
     private Boolean status;
@@ -44,12 +41,8 @@ public class Cart extends Timestamped {
     @OneToMany(mappedBy = "cart", orphanRemoval = true)
     private List<CartProduct> cartProducts = new ArrayList<>();
 
-    public void editTotalPrice(Integer totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
     public void order(OrderRequestDto orderRequestDto) {
-        this.request = orderRequestDto.getRequest();
+        this.totalPrice = orderRequestDto.getTotalPrice();
         this.status = true;
     }
 }
