@@ -20,7 +20,6 @@ public class CartResponseDto {
     private String storeName;
     private List<CartProductResponseDto> products;
     private Integer totalPrice;
-    private String request;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -31,7 +30,6 @@ public class CartResponseDto {
                 .storeName(cart.getStore().getName())
                 .products(cartProducts.stream().map(CartProductResponseDto::of).toList())
                 .totalPrice(cart.getTotalPrice())
-                .request(cart.getRequest())
                 .createdDate(cart.getCreatedDate())
                 .modifiedDate(cart.getModifiedDate())
                 .build();

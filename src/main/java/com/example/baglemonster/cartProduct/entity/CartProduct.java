@@ -26,12 +26,8 @@ public class CartProduct extends Timestamped {
     private Product product;
     private Integer quantity;
 
-    public void subtractCartProductQuantity() {
-        this.quantity = getQuantity() - 1;
-    }
-
-    public void addCartProductQuantity() {
-        this.quantity = getQuantity() + 1;
+    public void editQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }
 
