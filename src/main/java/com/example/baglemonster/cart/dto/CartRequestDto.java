@@ -1,6 +1,7 @@
 package com.example.baglemonster.cart.dto;
 
 import com.example.baglemonster.cart.entity.Cart;
+import com.example.baglemonster.cart.entity.StoreStatusEnum;
 import com.example.baglemonster.cartProduct.entity.CartProduct;
 import com.example.baglemonster.product.entity.Product;
 import com.example.baglemonster.store.entity.Store;
@@ -20,6 +21,7 @@ public class CartRequestDto {
     public Cart toCart(User user, Store store) {
         return Cart.builder()
                 .status(false)
+                .storeStatus(StoreStatusEnum.NEWORDER)
                 .user(user)
                 .store(store)
                 .totalPrice(0)

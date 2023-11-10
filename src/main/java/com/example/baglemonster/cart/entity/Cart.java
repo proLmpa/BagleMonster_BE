@@ -29,6 +29,10 @@ public class Cart extends Timestamped {
     @Column(name = "status", nullable = false)
     private Boolean status;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private StoreStatusEnum storeStatus;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
     private User user;
@@ -44,5 +48,9 @@ public class Cart extends Timestamped {
     public void order(OrderRequestDto orderRequestDto) {
         this.totalPrice = orderRequestDto.getTotalPrice();
         this.status = true;
+    }
+
+    public void editStoreStatus(StoreStatusEnum storeStatus) {
+        this.storeStatus = storeStatus;
     }
 }

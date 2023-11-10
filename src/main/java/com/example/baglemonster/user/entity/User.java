@@ -25,8 +25,4 @@ public class User {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
-
-//    @Builder.Default
-//    @OneToMany(mappedBy = "user")
-//    private List<Order> orders = new ArrayList<>();
 }
