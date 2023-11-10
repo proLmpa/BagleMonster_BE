@@ -22,6 +22,7 @@ public class CartRequestDto {
                 .status(false)
                 .user(user)
                 .store(store)
+                .totalPrice(0)
                 .build();
     }
 
