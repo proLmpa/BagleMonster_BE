@@ -130,7 +130,8 @@ public class CartService {
     // ------------private 메소드--------------
 
     // 장바구니 추가 시 확인 후 가져오기
-    private Cart getCart(User user, CartRequestDto cartRequestDto) {
+    @Transactional
+    public Cart getCart(User user, CartRequestDto cartRequestDto) {
         // 장바구니가 이미 존재할 경우
         Cart cart = findCartByUserAndStatus(user);
         if (cart != null) {
@@ -144,7 +145,9 @@ public class CartService {
         } else {
             // 장바구니가 존재하지 않을 경우 새로 만들기
             Store store = storeService.findStore(cartRequestDto.getStoreId());
-            return cartRequestDto.toCart(user, store);
+            cart = cartRequestDto.toCart(user, store);
+            cartRepository.save(cart);
+            return cart;
         }
     }
 
