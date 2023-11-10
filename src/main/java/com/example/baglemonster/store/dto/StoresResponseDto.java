@@ -10,9 +10,10 @@ import java.util.List;
 @Builder
 public class StoresResponseDto {
     private List<StoreResponseDto> stores;
+
     public static StoresResponseDto of(List<Store> stores) {
-        List<StoreResponseDto> storesResponseDto = stores.stream().map(
-                StoreResponseDto::of).toList();
+        List<StoreResponseDto> storesResponseDto = stores.stream()
+                .map(store -> StoreResponseDto.of(store, false)).toList();
 
         return StoresResponseDto.builder()
                 .stores(storesResponseDto)

@@ -2,9 +2,9 @@ package com.example.baglemonster.store.controller;
 
 import com.example.baglemonster.common.dto.ApiResponseDto;
 import com.example.baglemonster.common.security.UserDetailsImpl;
-import com.example.baglemonster.store.dto.StoresResponseDto;
 import com.example.baglemonster.store.dto.StoreRequestDto;
-import com.example.baglemonster.store.dto.StoreDetailResponseDto;
+import com.example.baglemonster.store.dto.StoreResponseDto;
+import com.example.baglemonster.store.dto.StoresResponseDto;
 import com.example.baglemonster.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,8 +33,8 @@ public class StoreController {
 
     @Operation(summary = "가게 단일 조회")
     @GetMapping("/stores/{storeId}")
-    public ResponseEntity<StoreDetailResponseDto> selectStore(@PathVariable Long storeId) {
-        StoreDetailResponseDto result = storeService.selectStore(storeId);
+    public ResponseEntity<StoreResponseDto> selectStore(@PathVariable Long storeId) {
+        StoreResponseDto result = storeService.selectStore(storeId);
         return ResponseEntity.ok().body(result);
     }
 
@@ -49,8 +49,8 @@ public class StoreController {
 
     @Operation(summary = "내 가게 조회")
     @GetMapping("/stores/mystore")
-    public ResponseEntity<StoreDetailResponseDto> selectMyStore(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        StoreDetailResponseDto result = storeService.selectMyStore(userDetails.getUser());
+    public ResponseEntity<StoreResponseDto> selectMyStore(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        StoreResponseDto result = storeService.selectMyStore(userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 

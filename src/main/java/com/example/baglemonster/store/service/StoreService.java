@@ -4,8 +4,8 @@ import com.example.baglemonster.common.exception.NotFoundException;
 import com.example.baglemonster.common.exception.UnauthorizedException;
 import com.example.baglemonster.common.s3.service.S3UploadService;
 import com.example.baglemonster.product.entity.Product;
-import com.example.baglemonster.store.dto.StoreDetailResponseDto;
 import com.example.baglemonster.store.dto.StoreRequestDto;
+import com.example.baglemonster.store.dto.StoreResponseDto;
 import com.example.baglemonster.store.dto.StoresResponseDto;
 import com.example.baglemonster.store.entity.Store;
 import com.example.baglemonster.store.repository.StoreRepository;
@@ -36,9 +36,9 @@ public class StoreService {
 
     // 가게 단일 조회
     @Transactional(readOnly = true)
-    public StoreDetailResponseDto selectStore(Long storeId) {
+    public StoreResponseDto selectStore(Long storeId) {
         Store store = findStore(storeId);
-        return StoreDetailResponseDto.of(store);
+        return StoreResponseDto.of(store, true);
     }
 
     // 가게 등록
@@ -61,7 +61,7 @@ public class StoreService {
 
     // 내 가게 조회
     @Transactional(readOnly = true)
-    public StoreDetailResponseDto selectMyStore(User user) {
+    public StoreResponseDto selectMyStore(User user) {
         User storeUser = findUser(user.getId());
         Store store = storeRepository.findByUser(storeUser);
 
@@ -69,7 +69,7 @@ public class StoreService {
             throw new NotFoundException("가게가 존재하지 않습니다.");
         }
 
-        return StoreDetailResponseDto.of(store);
+        return StoreResponseDto.of(store, true);
     }
 
     // 가게 수정
