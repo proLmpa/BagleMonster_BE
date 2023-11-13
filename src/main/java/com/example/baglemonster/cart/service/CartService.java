@@ -78,15 +78,12 @@ public class CartService {
     @Transactional
     public void orderCart(Long cartId, OrderRequestDto orderRequestDto, User user) {
         Cart cart = getCart(cartId, user);
-        if (cart.getStatus()) {
+        if (Boolean.TRUE.equals(cart.getStatus())) {
             throw new IllegalArgumentException("해당 장바구니는 이미 주문 완료된 상태입니다.");
         }
         List<CartProduct> cartProducts = cart.getCartProducts();
         checkCartQuantity(cartProducts, orderRequestDto.getProductList());
         cart.order(orderRequestDto);
-        for (CartProduct cartProduct : cartProducts) {
-            cartProduct.getProduct().addPopularity();
-        }
     }
 
     // 주문 내역 조회

@@ -5,6 +5,7 @@ import com.example.baglemonster.cart.dto.OrdersResponseDto;
 import com.example.baglemonster.cart.entity.Cart;
 import com.example.baglemonster.cart.entity.StoreStatusEnum;
 import com.example.baglemonster.cart.repository.CartRepository;
+import com.example.baglemonster.cartProduct.entity.CartProduct;
 import com.example.baglemonster.common.exception.NotFoundException;
 import com.example.baglemonster.common.exception.UnauthorizedException;
 import com.example.baglemonster.store.entity.Store;
@@ -35,7 +36,9 @@ public class OrderService {
         confirmStore(user, storeId);
 
         Cart order = getOrder(orderId);
-        order.editStoreStatus(StoreStatusEnum.READ);
+        if (order.getStoreStatus().equals(StoreStatusEnum.NEWORDER)) {
+            order.editStoreStatus(StoreStatusEnum.READ);
+        }
 
         return OrderResponseDto.of(getOrder(orderId));
     }
@@ -45,6 +48,11 @@ public class OrderService {
         confirmStore(user, storeId);
         Cart order = getOrder(orderId);
         order.editStoreStatus(StoreStatusEnum.SOLD);
+
+        List<CartProduct> cartProducts = order.getCartProducts();
+        for (CartProduct cartProduct : cartProducts) {
+            cartProduct.getProduct().addPopularity(cartProduct.getQuantity());
+        }
     }
 
     @Transactional
