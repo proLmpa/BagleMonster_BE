@@ -56,7 +56,7 @@ public class Product extends Timestamped {
         this.status = productRequestDto.getStatus();
     }
 
-    public void addPopularity() {
-        this.popularity = getPopularity() + 1;
+    public void addPopularity(int popularity) {
+        this.popularity = getPopularity() + popularity;
     }
 }
