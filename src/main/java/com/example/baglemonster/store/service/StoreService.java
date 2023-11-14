@@ -100,19 +100,17 @@ public class StoreService {
             throw new UnauthorizedException("가게 수정에 대한 권한이 없습니다.");
         }
 
-        String key = "storeIdx::" + storeId;
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
-            redisTemplate.delete(key);
-        }
-
         String currentPictureUrl = store.getStorePictureUrl();
         String storePictureUrl = currentPictureUrl;
         if (file != null) {
-            s3UploadService.deleteFile(currentPictureUrl);
+            if(currentPictureUrl != null)
+                s3UploadService.deleteFile(currentPictureUrl);
             storePictureUrl = s3UploadService.uploadFile(file);
         }
 
         store.editStore(storeRequestDto, storePictureUrl);
+
+        deleteRedisStore(storeId);
     }
 
     // 가게 삭제
@@ -165,5 +163,12 @@ public class StoreService {
     private void setRedisStore(String key, StoreResponseDto result) {
         ValueOperations<String, StoreResponseDto> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, result, 20, TimeUnit.SECONDS);
+    }
+
+    private void deleteRedisStore(Long storeId) {
+        String key = "storeIdx::" + storeId;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.delete(key);
+        }
     }
 }
