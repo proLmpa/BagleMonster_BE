@@ -7,10 +7,12 @@ import com.example.baglemonster.product.dto.ProductResponseDto;
 import com.example.baglemonster.product.dto.ProductsResponseDto;
 import com.example.baglemonster.product.entity.Product;
 import com.example.baglemonster.product.repository.ProductRepository;
+import com.example.baglemonster.store.dto.StoreResponseDto;
 import com.example.baglemonster.store.entity.Store;
 import com.example.baglemonster.store.service.StoreService;
 import com.example.baglemonster.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final StoreService storeService;
     private final S3UploadService s3UploadService;
+    private final RedisTemplate<String, StoreResponseDto> redisTemplate;
 
     // 상품 등록
     @Transactional
@@ -44,6 +47,8 @@ public class ProductService {
 
         Product product = productRequestDto.toEntity(store, productPictureUrl);
         productRepository.save(product);
+
+        deleteRedisStore(storeId);
     }
 
     // 해당 가게 상품 목록 조회
@@ -81,6 +86,8 @@ public class ProductService {
         }
 
         product.editProduct(productRequestDto, productPictureUrl);
+
+        deleteRedisStore(storeId);
     }
 
     // 상품 삭제
@@ -101,6 +108,8 @@ public class ProductService {
         }
 
         productRepository.delete(product);
+
+        deleteRedisStore(storeId);
     }
 
     // ID로 상품 찾기
@@ -108,5 +117,12 @@ public class ProductService {
         return productRepository.findById(productId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 상품은 존재하지 않습니다.")
         );
+    }
+
+    private void deleteRedisStore(Long storeId) {
+        String key = "storeIdx::" + storeId;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.delete(key);
+        }
     }
 }

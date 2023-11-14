@@ -48,7 +48,7 @@ public class StoreService {
         StoreResponseDto result = null;
         String key = "storeIdx::" + storeId;
 
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))){
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             result = getRedisStore(key);
         } else {
             Store store = findStore(storeId);
@@ -98,6 +98,11 @@ public class StoreService {
 
         if (!store.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("가게 수정에 대한 권한이 없습니다.");
+        }
+
+        String key = "storeIdx::" + storeId;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.delete(key);
         }
 
         String currentPictureUrl = store.getStorePictureUrl();
