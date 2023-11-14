@@ -12,20 +12,28 @@ import com.example.baglemonster.store.repository.StoreRepository;
 import com.example.baglemonster.user.entity.User;
 import com.example.baglemonster.user.entity.UserRoleEnum;
 import com.example.baglemonster.user.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
-    private final S3UploadService s3UploadService;
     private final UserRepository userRepository;
+    private final S3UploadService s3UploadService;
+    private final RedisTemplate<String, StoreResponseDto> redisTemplate;
 
     // 가게 전체 조회
     @Transactional(readOnly = true)
@@ -37,8 +45,18 @@ public class StoreService {
     // 가게 단일 조회
     @Transactional(readOnly = true)
     public StoreResponseDto selectStore(Long storeId) {
-        Store store = findStore(storeId);
-        return StoreResponseDto.of(store, true);
+        StoreResponseDto result = null;
+        String key = "storeIdx::" + storeId;
+
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))){
+            result = getRedisStore(key);
+        } else {
+            Store store = findStore(storeId);
+            result = StoreResponseDto.of(store, true);
+            setRedisStore(key, result);
+        }
+
+        return result;
     }
 
     // 가게 등록
@@ -86,7 +104,7 @@ public class StoreService {
         String storePictureUrl = currentPictureUrl;
         if (file != null) {
             s3UploadService.deleteFile(currentPictureUrl);
-            storePictureUrl  = s3UploadService.uploadFile(file);
+            storePictureUrl = s3UploadService.uploadFile(file);
         }
 
         store.editStore(storeRequestDto, storePictureUrl);
@@ -125,5 +143,22 @@ public class StoreService {
     // ID로 유저 찾기
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElse(null);
+    }
+
+    private StoreResponseDto getRedisStore(String key) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModules(new JavaTimeModule(), new Jdk8Module());
+
+        try {
+            String json = mapper.writeValueAsString(redisTemplate.opsForValue().get(key));
+            return mapper.readValue(json, StoreResponseDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setRedisStore(String key, StoreResponseDto result) {
+        ValueOperations<String, StoreResponseDto> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, result, 20, TimeUnit.SECONDS);
     }
 }
