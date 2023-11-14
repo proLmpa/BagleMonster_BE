@@ -81,7 +81,8 @@ public class ProductService {
         String currentPictureUrl = product.getProductPictureUrl();
         String productPictureUrl = currentPictureUrl;
         if (file != null) {
-            s3UploadService.deleteFile(currentPictureUrl);
+            if(currentPictureUrl != null)
+                s3UploadService.deleteFile(currentPictureUrl);
             productPictureUrl  = s3UploadService.uploadFile(file);
         }
 
