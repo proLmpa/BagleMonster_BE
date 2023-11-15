@@ -5,6 +5,7 @@ import com.example.baglemonster.cart.dto.CartResponseDto;
 import com.example.baglemonster.cart.dto.CartsResponseDto;
 import com.example.baglemonster.cart.dto.OrderRequestDto;
 import com.example.baglemonster.cart.entity.Cart;
+import com.example.baglemonster.cart.event.CartOrderEventPublisher;
 import com.example.baglemonster.cart.repository.CartRepository;
 import com.example.baglemonster.cartProduct.entity.CartProduct;
 import com.example.baglemonster.cartProduct.repository.CartProductRepository;
@@ -30,6 +31,7 @@ public class CartService {
     private final StoreService storeService;
     private final ProductService productService;
     private final UserRepository userRepository;
+    private final CartOrderEventPublisher eventPublisher;
 
     // 장바구니 메뉴 추가
     @Transactional
@@ -81,9 +83,12 @@ public class CartService {
         if (Boolean.TRUE.equals(cart.getStatus())) {
             throw new IllegalArgumentException("해당 장바구니는 이미 주문 완료된 상태입니다.");
         }
-        List<CartProduct> cartProducts = cart.getCartProducts();
-        checkCartQuantity(cartProducts, orderRequestDto.getProductList());
+        checkCartQuantity(cart, orderRequestDto.getProductList());
         cart.order(orderRequestDto);
+
+        // 이벤트 발생 -> 알림 생성
+        User storeUser = findUser(storeService.findStore(cart.getStore().getId()).getUser().getId());
+        eventPublisher.publishCartOrderEvent(cart, storeUser);
     }
 
     // 주문 내역 조회
@@ -134,19 +139,18 @@ public class CartService {
     }
 
     // 주문 전 장바구니와 수량 비교하기
-    private void checkCartQuantity(List<CartProduct> cartProducts, List<CartRequestDto> productList) {
-        for (CartProduct cartProduct : cartProducts) {
-            Long cartProductId = cartProduct.getProduct().getId();
-            Integer cartProductQuantity = cartProduct.getQuantity();
-            for (CartRequestDto orderProduct : productList) {
+    private void checkCartQuantity(Cart cart, List<CartRequestDto> orderProductList) {
+            for (CartRequestDto orderProduct : orderProductList) {
                 Long orderProductId = orderProduct.getProductId();
                 Integer orderProductQuantity = orderProduct.getQuantity();
-                if ((cartProductId.equals(orderProductId) && (!cartProductQuantity.equals(orderProductQuantity)))) {
+                Product product = productService.findProduct(orderProductId);
+                CartProduct cartProduct = findCartProduct(cart, product);
+                Integer cartProductQuantity = cartProduct.getQuantity();
+                if (!cartProductQuantity.equals(orderProductQuantity)) {
                     cartProduct.editQuantity(orderProductQuantity);
                 }
             }
         }
-    }
 
     // ID로 장바구니 찾기
     private Cart findCart(Long cartId) {
