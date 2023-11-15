@@ -44,6 +44,8 @@ public class StoreService {
     // 가게 등록
     @Transactional
     public void createStore(StoreRequestDto storeRequestDto, MultipartFile file, User user) throws IOException {
+        findStoreByUserId(user.getId());
+
         if (!user.getRole().getAuthority().equals(UserRoleEnum.STORE.getAuthority())) {
             throw new UnauthorizedException("가게 등록에 대한 권한이 없습니다.");
         }
@@ -120,6 +122,13 @@ public class StoreService {
         return storeRepository.findById(storeId).orElseThrow(() ->
                 new NotFoundException("선택한 가게는 존재하지 않습니다.")
         );
+    }
+
+    public void findStoreByUserId(Long userId) {
+        Store store = storeRepository.findByUserId(userId).orElse(null);
+
+        if (store != null)
+            throw new IllegalArgumentException("이미 등록한 가게가 존재합니다.");
     }
 
     // ID로 유저 찾기
