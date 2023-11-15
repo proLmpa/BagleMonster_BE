@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class StoreResponseDto {
     private LocalTime openedTime;
     private LocalTime closedTime;
     private String closedDays;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
     private List<ProductResponseDto> products;
 
     public static StoreResponseDto of(Store store, boolean isDetail) {
@@ -42,6 +45,8 @@ public class StoreResponseDto {
                 .openedTime(store.getOpenedTime())
                 .closedTime(store.getClosedTime())
                 .closedDays(store.getClosedDays())
+                .createdDate(store.getCreatedDate())
+                .modifiedDate(store.getModifiedDate())
                 .products(isDetail? store.getProducts().stream().map(ProductResponseDto::of).toList() : null)
                 .build();
     }

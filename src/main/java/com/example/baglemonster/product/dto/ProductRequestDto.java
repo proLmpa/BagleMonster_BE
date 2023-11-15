@@ -21,6 +21,7 @@ public class ProductRequestDto {
                 .description(this.description)
                 .price(this.price)
                 .productPictureUrl(productPictureUrl)
+                .popularity(0)
                 .status(this.status)
                 .store(store)
                 .build();

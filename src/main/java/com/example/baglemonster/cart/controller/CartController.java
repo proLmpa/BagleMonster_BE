@@ -5,7 +5,6 @@ import com.example.baglemonster.cart.dto.CartResponseDto;
 import com.example.baglemonster.cart.dto.CartsResponseDto;
 import com.example.baglemonster.cart.dto.OrderRequestDto;
 import com.example.baglemonster.cart.service.CartService;
-import com.example.baglemonster.cartProduct.dto.CartProductResponseDto;
 import com.example.baglemonster.common.dto.ApiResponseDto;
 import com.example.baglemonster.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,22 +34,6 @@ public class CartController {
     @GetMapping("/carts")
     public ResponseEntity<CartResponseDto> selectCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         CartResponseDto result = cartService.selectCart(userDetails.getUser());
-        return ResponseEntity.ok().body(result);
-    }
-
-    @Operation(summary = "특정 주문 수량 감소")
-    @PutMapping("/carts/{cartId}/products/{productId}/minus")
-    public ResponseEntity<CartProductResponseDto> subtractCartProduct(@PathVariable Long cartId, @PathVariable Long productId,
-                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CartProductResponseDto result = cartService.subtractCartProduct(cartId, productId, userDetails.getUser());
-        return ResponseEntity.ok().body(result);
-    }
-
-    @Operation(summary = "특정 주문 수량 추가")
-    @PutMapping("/carts/{cartId}/products/{productId}/plus")
-    public ResponseEntity<CartProductResponseDto> addCartProduct(@PathVariable Long cartId, @PathVariable Long productId,
-                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CartProductResponseDto result = cartService.addCartProduct(cartId, productId, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 

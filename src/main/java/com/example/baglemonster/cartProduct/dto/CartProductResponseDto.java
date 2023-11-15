@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class CartProductResponseDto {
     private Long productId;
     private String name;
+    private String productPictureUrl;
     private Integer price;
     private Integer quantity;
 
@@ -20,6 +21,7 @@ public class CartProductResponseDto {
         return CartProductResponseDto.builder()
                 .productId(cartProduct.getProduct().getId())
                 .name(cartProduct.getProduct().getName())
+                .productPictureUrl(cartProduct.getProduct().getProductPictureUrl())
                 .price(cartProduct.getProduct().getPrice())
                 .quantity(cartProduct.getQuantity())
                 .build();

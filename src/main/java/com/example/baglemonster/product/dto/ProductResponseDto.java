@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -19,6 +21,8 @@ public class ProductResponseDto {
     private String productPictureUrl;
     private Integer popularity;
     private Boolean status;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     public static ProductResponseDto of(Product product) {
         String noImageUrl = "https://baglemonster.s3.ap-northeast-2.amazonaws.com/no_image.jpg";
@@ -33,6 +37,8 @@ public class ProductResponseDto {
                 .productPictureUrl(pictureUrl)
                 .popularity(product.getPopularity())
                 .status(product.getStatus())
+                .createdDate(product.getCreatedDate())
+                .modifiedDate(product.getModifiedDate())
                 .build();
     }
 }

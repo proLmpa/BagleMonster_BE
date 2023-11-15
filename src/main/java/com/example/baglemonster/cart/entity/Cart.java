@@ -25,12 +25,13 @@ public class Cart extends Timestamped {
     @Column(name = "totalPrice", nullable = false)
     private Integer totalPrice;
 
-    @Column(name = "request")
-    private String request;
-
     // 장바구니 상태면 false, 주문 완료 상태면 true
     @Column(name = "status", nullable = false)
     private Boolean status;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private StoreStatusEnum storeStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
@@ -44,12 +45,12 @@ public class Cart extends Timestamped {
     @OneToMany(mappedBy = "cart", orphanRemoval = true)
     private List<CartProduct> cartProducts = new ArrayList<>();
 
-    public void editTotalPrice(Integer totalPrice) {
-        this.totalPrice = totalPrice;
+    public void order(OrderRequestDto orderRequestDto) {
+        this.totalPrice = orderRequestDto.getTotalPrice();
+        this.status = true;
     }
 
-    public void order(OrderRequestDto orderRequestDto) {
-        this.request = orderRequestDto.getRequest();
-        this.status = true;
+    public void editStoreStatus(StoreStatusEnum storeStatus) {
+        this.storeStatus = storeStatus;
     }
 }
