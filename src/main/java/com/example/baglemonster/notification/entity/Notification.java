@@ -27,7 +27,7 @@ public class Notification {
     @Column(name = "rd", nullable = false)
     private Boolean rd;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
