@@ -18,7 +18,7 @@ public class NotificationResponseDto {
         this.storeId = notification.getCart().getStore().getId();
         this.cartId = notification.getCart().getId();
         this.content = notification.getContent();
-        this.timeSinceCreated = DurationFormatter.format(notification.getCreatedAt());
+        this.timeSinceCreated = DurationFormatter.format(notification.getCreatedDate());
         this.rd = notification.getRd();
     }
 }

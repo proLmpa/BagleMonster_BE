@@ -21,8 +21,8 @@ public class Notification {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "createdAt", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "createdDate", nullable = false)
+    private LocalDateTime createdDate;
 
     @Column(name = "rd", nullable = false)
     private Boolean rd;
@@ -38,11 +38,11 @@ public class Notification {
     @Column(nullable = false)
     private LocalDateTime expirationTime;
 
-    public Notification(String content, LocalDateTime createdAt, Cart cart, User user) {
+    public Notification(String content, LocalDateTime createdDate, Cart cart, User user) {
         this.cart = cart;
         this.user = user;
         this.content = content;
-        this.createdAt = createdAt;
+        this.createdDate = createdDate;
         this.rd = false;
         this.expirationTime = LocalDateTime.now().plusDays(1);
     }
