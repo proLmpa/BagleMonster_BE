@@ -44,7 +44,7 @@ public class CartService {
         Product product = productService.findProduct(cartRequestDto.getProductId());
         CartProduct cartProduct = findCartProduct(cart, product);
         if (cartProduct != null) {
-            throw new IllegalArgumentException("해당 상품은 이미 장바구니에 담겨있습니다.");
+            throw new IllegalArgumentException("1 해당 상품은 이미 장바구니에 담겨있습니다.");
         } else {
             cartProduct = cartRequestDto.toEntityCartProduct(cart, product);
             cartProductRepository.save(cartProduct);
@@ -109,7 +109,7 @@ public class CartService {
         if (cart != null) {
             // 다른 가게의 장바구니가 담겨있을 경우 -> 에외처리
             if (!cart.getStore().getId().equals(cartRequestDto.getStoreId())) {
-                throw new IllegalArgumentException("다른 가게의 상품이 이미 장바구니에 담겨있습니다.");
+                throw new IllegalArgumentException("0 다른 가게의 상품이 이미 장바구니에 담겨있습니다.");
             } else {
                 // 기존 가게일 경우 기존 장바구니 가져오기
                 return cart;
@@ -124,7 +124,8 @@ public class CartService {
     }
 
     // 장바구니 추가 외 동작 확인 후 가져오기
-    private Cart getCart(Long cartId, User user) {
+    @Transactional(readOnly = true)
+    public Cart getCart(Long cartId, User user) {
         Cart cart = findCart(cartId);
         if (!cart.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("해당 장바구니에 대한 권한이 없습니다.");
