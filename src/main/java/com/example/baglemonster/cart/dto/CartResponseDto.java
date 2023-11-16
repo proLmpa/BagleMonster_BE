@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CartResponseDto {
     private Long cartId;
+    private Long storeId;
     private String storeName;
     private List<CartProductResponseDto> products;
     private Integer totalPrice;
@@ -28,6 +29,7 @@ public class CartResponseDto {
         List<CartProduct> cartProducts = cart.getCartProducts();
         return CartResponseDto.builder()
                 .cartId(cart.getId())
+                .storeId(cart.getStore().getId())
                 .storeName(cart.getStore().getName())
                 .products(cartProducts.stream().map(CartProductResponseDto::of).toList())
                 .totalPrice(cart.getTotalPrice())
