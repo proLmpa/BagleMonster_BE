@@ -39,7 +39,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponseDto selectOrder(User user, Long storeId, Long orderId) {
+    public void readOrder(User user, Long storeId, Long orderId) {
         confirmStore(user, storeId);
 
         Cart order = getOrder(orderId);
@@ -48,8 +48,6 @@ public class OrderService {
             Notification notification = findNotification(order);
             notification.readNotification();
         }
-
-        return OrderResponseDto.of(getOrder(orderId));
     }
 
     @Transactional
